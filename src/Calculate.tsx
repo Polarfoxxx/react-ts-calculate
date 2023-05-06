@@ -1,6 +1,6 @@
 import React from "react";
 
-type TypeSign = "+" | "-" | "*" | "/" | "AC" | "+/-" | "%" 
+type TypeSign = "+" | "-" | "*" | "/" | "AC" | "+/-" | "%"
 
 function Calculate(): JSX.Element {
     const [display, setDisplay] = React.useState("")
@@ -22,6 +22,7 @@ function Calculate(): JSX.Element {
             numberOneRef.current = ""
         } else if (functSign === "+/-" && display === "") {
             setDisplay("-")
+            setSecondDisplay(prew => prew + "-")
         } else if (functSign === "%" && display !== undefined) {    /* vypocet percent */
             setSecondDisplay(prew => prew + functSign)
             setDisplay("")
@@ -30,7 +31,6 @@ function Calculate(): JSX.Element {
             const oneNumberToString = onePercento.toString()
             numberOneRef.current = oneNumberToString
             signFunctionRef.current = "*"
-            return
         } else if (display) {
             setSecondDisplay(prew => prew + functSign)
             signFunctionRef.current = functSign as TypeSign
@@ -43,8 +43,11 @@ function Calculate(): JSX.Element {
         const resSign = e.currentTarget.name
         if (numberOneRef.current && signFunctionRef.current && display) {
             const result: string = eval(`${numberOneRef.current} ${signFunctionRef.current} ${display}`)
-            setDisplay(result)
-            setSecondDisplay(prew => prew + resSign + result)
+            const resultToNumber = parseFloat(result)
+            const matchRoud = Math.round(resultToNumber * 100) / 100
+            const resultToString = matchRoud.toString()
+            setDisplay(resultToString)
+            setSecondDisplay(prew => prew + resSign + resultToString)
         }
     }
 
